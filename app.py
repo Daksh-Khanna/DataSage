@@ -1,4 +1,4 @@
-from frontend.ui_manager import show_ui
+from frontend.ui_manager import UIManager
 
 if __name__ == "__main__":
-    show_ui()
+    UIManager().display_dashboard()
