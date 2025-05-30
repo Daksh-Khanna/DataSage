@@ -14,3 +14,7 @@ class DBConnector:
                 host=DB_HOST
             )
         return self.connection
+    
+    def __del__(self):
+     if self.connection and not self.connection.closed:
+        self.connection.close()

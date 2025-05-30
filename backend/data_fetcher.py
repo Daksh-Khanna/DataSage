@@ -5,17 +5,32 @@ from backend.queries import QueryBuilder
 class DataFetcher:
     def __init__(self):
         self.db = DBConnector()
-        self.queries = QueryBuilder()
 
-    def fetch_details(self):
-        query = self.queries.get_detail_query()
+    def fetch_details(self, filters=None):
+        filters = filters or {}
+        query, params = QueryBuilder.build_details_query(filters)
         with self.db.get_connection() as conn:
-            df = pd.read_sql(query, conn)
-            df["System Status"] = df["System Status"].apply(lambda x: "Success" if x else "Failed")
+            df = pd.read_sql(query, conn, params=params)
+
+        # Add Response Time column (based on raw timestamps)
+        df["response_time"] = df["end_time_utc"] - df["start_time_utc"]
+
+        # Format Response Time
+        total_seconds = df["response_time"].dt.total_seconds().astype(int)
+        df["response_time"] = total_seconds.apply(
+            lambda s: f"{s} sec" if s < 60 
+            else f"{s//60} min {s%60} sec"
+        )        
+        # Drop unnecessary column
+        df = df.drop(columns=["end_time_utc"])
+
+        # Format System Status from boolean to text
+        df["system_status"] = df["system_status"].apply(lambda x: "Success" if x else "Failed")
+
         return df
 
     def fetch_metrics(self):
-        query = self.queries.get_metrics_query()
+        query = QueryBuilder.build_metrics_query()
         with self.db.get_connection() as conn:
             df = pd.read_sql(query, conn)
         return df
