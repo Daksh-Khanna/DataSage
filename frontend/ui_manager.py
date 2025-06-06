@@ -1,10 +1,14 @@
 import streamlit as st
 import pandas as pd
 from backend.data_fetcher import DataFetcher
+from utils.logger import get_logger
+
+logger = get_logger("ui_logger", "ui.log")
 
 class UIManager:
     def __init__(self):
         self.fetcher = DataFetcher()
+        logger.info("UI initialized")
 
     def display_dashboard(self):
         st.set_page_config(page_title="Dashboard", layout="wide")
@@ -38,8 +42,7 @@ class UIManager:
                 
                 date_range = st.date_input(
                     "Select Date Range", 
-                    st.session_state["date_range"],
-                    key="date_range"
+                    st.session_state["date_range"]
                 )
 
                 operator_filter = st.selectbox(
