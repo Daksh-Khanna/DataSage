@@ -2,10 +2,11 @@ import sys
 import requests
 import pandas as pd
 from backend.db_connector import DBConnector
+from config import PPLX_API_KEY
 
 # === CONFIGURATION ===
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
-PERPLEXITY_API_KEY = "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"
+PERPLEXITY_API_KEY = PPLX_API_KEY
 
 SYSTEM_PROMPT = """
 You are an AI SQL assistant. Generate only a PostgreSQL SQL query based on the question.
