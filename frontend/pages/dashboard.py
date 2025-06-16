@@ -11,7 +11,6 @@ class UIManager:
         logger.info("UI initialized")
 
     def display_dashboard(self):
-        st.set_page_config(page_title="Dashboard", layout="wide")
         st.title("Interactive Dashboard")
 
         df_details = self.fetcher.fetch_details()
@@ -130,3 +129,6 @@ class UIManager:
             with r2c2:
                 st.subheader("Questions Per Session")
                 st.line_chart(df_metrics.set_index("date")[["questions_per_session"]])
+
+
+UIManager().display_dashboard()
