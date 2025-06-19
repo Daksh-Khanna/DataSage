@@ -11,7 +11,8 @@ class DataFetcher:
         query, params = QueryBuilder.build_details_query(filters)
         with self.db.get_connection() as conn:
             df = pd.read_sql(query, conn, params=params)
-
+        df["start_time_utc"] = pd.to_datetime(df["start_time_utc"])
+        df["end_time_utc"] = pd.to_datetime(df["end_time_utc"])
         # Add Response Time column (based on raw timestamps)
         df["response_time"] = df["end_time_utc"] - df["start_time_utc"]
 

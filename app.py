@@ -2,7 +2,7 @@ import streamlit as st
 
 pages = [
     st.Page(
-        "frontend/pages/dashboard.py",
+        "frontend/pages/dashboard_ui.py",
         title="Dashboard",
         icon="📊",
 		default=True
