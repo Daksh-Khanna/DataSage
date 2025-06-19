@@ -1,6 +1,6 @@
 import pandas as pd
-from backend.db_connector import DBConnector
-from backend.queries import QueryBuilder
+from .db_connector import DBConnector
+from .queries import QueryBuilder
 
 class DataFetcher:
     def __init__(self):

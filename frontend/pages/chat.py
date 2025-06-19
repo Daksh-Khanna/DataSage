@@ -1,5 +1,7 @@
 import streamlit as st
-from backend.chatbot import get_sql_from_perplexity, execute_sql_and_fetch_df
+import pandas as pd
+from backend.assistant.sql_assistant.sql_generator import generate_sql
+from backend.dao.db_connector import DBConnector
 from utils.logger import get_logger
 
 logger = get_logger("chat_logger", "chat.log")
@@ -15,8 +17,7 @@ class Chatbot:
 
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
-                # Check if the content is a DataFrame (or similar)
-                if hasattr(msg["content"], 'to_html'):  # Check if it's a DataFrame
+                if isinstance(msg["content"], pd.DataFrame):
                     st.dataframe(msg["content"])
                 else:
                     st.markdown(msg["content"])
@@ -25,17 +26,30 @@ class Chatbot:
             st.session_state.messages.append({"role": "user", "content": prompt})
             st.chat_message("user").markdown(prompt)
 
-            sql_query = get_sql_from_perplexity(prompt)
-            response_df = execute_sql_and_fetch_df(sql_query)
+            try:
+                sql_query = generate_sql(prompt)
+                logger.info(f"Generated SQL: {sql_query}")
 
-            # Store both the DataFrame and a string representation
-            st.session_state.messages.append({
-                "role": "assistant", 
-                "content": response_df,
-                "type": "dataframe"  # Add a type identifier
-            })
-            with st.chat_message("assistant"):
-                st.dataframe(response_df)
+                db = DBConnector()
+                with db.get_connection() as conn:
+                    df = pd.read_sql(sql_query, conn)
 
+                st.session_state.messages.append({
+                    "role": "assistant", 
+                    "content": df
+                })
+
+                with st.chat_message("assistant"):
+                    st.dataframe(df)
+
+            except Exception as e:
+                error_msg = f"❌ Error: {e}"
+                logger.error(error_msg)
+                st.session_state.messages.append({
+                    "role": "assistant", 
+                    "content": error_msg
+                })
+                with st.chat_message("assistant"):
+                    st.error(error_msg)
 
 Chatbot().display()

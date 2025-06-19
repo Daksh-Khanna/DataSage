@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
-from backend.data_fetcher import DataFetcher
+from backend.dao.data_fetcher import DataFetcher
 from utils.logger import get_logger
 
 logger = get_logger("ui_logger", "ui.log")
 
-class UIManager:
+class dashboard:
     def __init__(self):
         self.fetcher = DataFetcher()
         logger.info("UI initialized")
@@ -131,4 +131,4 @@ class UIManager:
                 st.line_chart(df_metrics.set_index("date")[["questions_per_session"]])
 
 
-UIManager().display_dashboard()
+dashboard().display_dashboard()
