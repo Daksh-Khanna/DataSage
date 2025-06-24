@@ -8,38 +8,41 @@ class LoginPage:
         self.face_auth = FaceAuthenticator()
 
     def render(self):
-        st.title("🔐 Secure Login")
+        st.markdown("<h3 style='text-align:center;'>🔐 Secure Login</h3>", unsafe_allow_html=True)
 
-        email = st.text_input("Email", key="login_email")
-        password = st.text_input("Password", type="password", key="login_password")
-        face_image = st.camera_input("Capture your face", key="login_face")
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            with st.container():
+                email = st.text_input("Email", key="login_email")
+                password = st.text_input("Password", type="password", key="login_password")
+                face_image = st.camera_input("Capture your face", key="login_face")
 
-        if "authenticated" not in st.session_state:
-            st.session_state.authenticated = False
-            st.session_state.email = None
-            st.session_state.role = None
+                if "authenticated" not in st.session_state:
+                    st.session_state.authenticated = False
+                    st.session_state.email = None
+                    st.session_state.role = None
 
-        if st.button("Login"):
-            if not (email and password and face_image):
-                st.warning("Please complete all fields.")
-                return False
+                if st.button("Login"):
+                    if not (email and password and face_image):
+                        st.warning("Please complete all fields.")
+                        return False
 
-            user = self.user_manager.authenticate(email, password)
-            if not user:
-                st.error("❌ Invalid email or password.")
-                return False
+                    user = self.user_manager.authenticate(email, password)
+                    if not user:
+                        st.error("❌ Invalid email or password.")
+                        return False
 
-            match = self.face_auth.verify(face_image, user["image_path"])
-            if not match:
-                st.error("❌ Face not recognized.")
-                return False
+                    match = self.face_auth.verify(face_image, user["image_path"])
+                    if not match:
+                        st.error("❌ Face not recognized.")
+                        return False
 
-            # ✅ Login success
-            st.session_state.authenticated = True
-            st.session_state.email = user["email"]
-            st.session_state.role = user["role"]
-            st.success(f"✅ Welcome {user['role']}: {user['email']}")
-            st.rerun()
-            return True
+                    # ✅ Login success
+                    st.session_state.authenticated = True
+                    st.session_state.email = user["email"]
+                    st.session_state.role = user["role"]
+                    st.success(f"✅ Welcome {user['role']}: {user['email']}")
+                    st.rerun()
+                    return True
 
         return False

@@ -6,25 +6,33 @@ from frontend.pages.chat import ChatPage
 from frontend.pages.admin import AdminPage
 
 # Initialize session
+# Initialize all session keys safely
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+if "role" not in st.session_state:
     st.session_state.role = None
+if "email" not in st.session_state:
     st.session_state.email = None
+
 
 if st.session_state.authenticated:
     if st.sidebar.button("🚪 Logout"):
         st.session_state.clear()
         st.rerun()
 
-# Login or Signup
 if not st.session_state.authenticated:
-    mode = st.radio("Select Mode:", ["Login", "Sign Up"], horizontal=True)
-    if mode == "Login":
-        if not LoginPage().render():
-            st.stop()
-    else:
+    tab1, tab2 = st.tabs(["🔐 Login", "📝 Sign Up"])
+
+    login_success = False
+    with tab1:
+        login_success = LoginPage().render()
+
+    with tab2:
         SignupPage().render()
+
+    if not login_success:
         st.stop()
+
 
 # Role-based rendering
 role = st.session_state.role

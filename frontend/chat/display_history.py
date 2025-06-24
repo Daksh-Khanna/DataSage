@@ -1,4 +1,4 @@
-# frontend/chat/methods/display_history.py
+# frontend/chat/display_history.py
 import streamlit as st
 import pandas as pd
 

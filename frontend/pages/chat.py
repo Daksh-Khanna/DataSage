@@ -10,8 +10,6 @@ logger = get_logger("chat_logger", "chat.log")
 class ChatPage:
     def __init__(self):
         logger.info("Chatbot initialized")
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
 
     def render(self):
         st.title("💬 Chat with AI")
