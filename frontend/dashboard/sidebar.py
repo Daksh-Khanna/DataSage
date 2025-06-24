@@ -1,13 +1,8 @@
 import streamlit as st
-import datetime
-import pandas as pd
 
 class SidebarFilters:
     def __init__(self, df_details):
         self.df = df_details
-        self.today = datetime.date.today()
-        self.start_date = None
-        self.end_date = None
         self.filters = {}
 
     def render(self):

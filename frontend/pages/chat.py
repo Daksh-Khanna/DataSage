@@ -6,14 +6,14 @@ from utils.logger import get_logger
 
 logger = get_logger("chat_logger", "chat.log")
 
-class Chatbot:
+class ChatPage:
     def __init__(self):
         logger.info("Chatbot initialized")
         if "messages" not in st.session_state:
             st.session_state.messages = []
 
-    def display(self):
-        st.title("Chat with AI")
+    def render(self):
+        st.title("💬 Chat with AI")
 
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
@@ -35,7 +35,7 @@ class Chatbot:
                     df = pd.read_sql(sql_query, conn)
 
                 st.session_state.messages.append({
-                    "role": "assistant", 
+                    "role": "assistant",
                     "content": df
                 })
 
@@ -46,10 +46,10 @@ class Chatbot:
                 error_msg = f"❌ Error: {e}"
                 logger.error(error_msg)
                 st.session_state.messages.append({
-                    "role": "assistant", 
+                    "role": "assistant",
                     "content": error_msg
                 })
                 with st.chat_message("assistant"):
                     st.error(error_msg)
 
-Chatbot().display()
+ChatPage().render()

@@ -3,14 +3,13 @@ from backend.dao.data_fetcher import DataFetcher
 from frontend.dashboard.details import DetailsView
 from frontend.dashboard.metrics import MetricsView
 
-st.set_page_config(page_title="Dashboard", layout="wide")
-
-class Dashboard:
+class DashboardPage:
     def __init__(self):
         self.fetcher = DataFetcher()
 
-    def display_dashboard(self):
-        st.title("Interactive Dashboard")
+    def render(self):
+        
+        st.title("📊 Interactive Dashboard")
 
         df_metrics = self.fetcher.fetch_metrics()
 
@@ -22,4 +21,4 @@ class Dashboard:
         with tab2:
             MetricsView(df_metrics).render()
 
-Dashboard().display_dashboard()
+DashboardPage().render()
