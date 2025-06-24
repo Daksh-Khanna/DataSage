@@ -3,6 +3,7 @@ import pandas as pd
 from backend.assistant.sql_assistant.sql_generator import generate_sql
 from backend.dao.db_connector import DBConnector
 from utils.logger import get_logger
+from frontend.chat.display_history import DisplayHistory
 
 logger = get_logger("chat_logger", "chat.log")
 
@@ -15,12 +16,7 @@ class ChatPage:
     def render(self):
         st.title("💬 Chat with AI")
 
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]):
-                if isinstance(msg["content"], pd.DataFrame):
-                    st.dataframe(msg["content"])
-                else:
-                    st.markdown(msg["content"])
+        DisplayHistory().render()
 
         if prompt := st.chat_input("Ask a question..."):
             st.session_state.messages.append({"role": "user", "content": prompt})
