@@ -5,7 +5,7 @@ class MetricsView:
         self.df = df_metrics
 
     def render(self):
-        st.subheader("Session Metrics")
+        st.subheader("Session Metrics",divider="grey")
 
         latest = self.df.iloc[-1]
         col1, col2, col3, col4, col5 = st.columns(5)

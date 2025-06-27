@@ -66,3 +66,8 @@ class UserManagerDB:
         with self.conn.cursor() as cur:
             cur.execute("SELECT email, role FROM users")
             return cur.fetchall()
+        
+    def get_all_users_full(self):
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT id, email, role, image_path FROM users ORDER BY email")
+            return cur.fetchall()

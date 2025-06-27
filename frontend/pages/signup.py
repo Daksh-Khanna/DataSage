@@ -6,8 +6,7 @@ class SignupPage:
         self.user_manager = UserManagerDB()
 
     def render(self):
-        st.markdown("<h3 style='text-align:center;'>📝 Sign Up</h3>", unsafe_allow_html=True)
-
+        st.set_page_config(layout="centered")
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             with st.container():
@@ -30,3 +29,5 @@ class SignupPage:
                         st.success("✅ Account created successfully. You can now log in.")
                     except Exception as e:
                         st.error(f"❌ Failed to sign up: {e}")
+
+SignupPage().render()

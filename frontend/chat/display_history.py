@@ -11,6 +11,6 @@ class DisplayHistory:
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
                 if isinstance(msg["content"], pd.DataFrame):
-                    st.dataframe(msg["content"])
+                    st.dataframe(msg["content"],use_container_width=False)
                 else:
                     st.markdown(msg["content"])

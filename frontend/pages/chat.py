@@ -12,8 +12,8 @@ class ChatPage:
         logger.info("Chatbot initialized")
 
     def render(self):
-        st.title("💬 Chat with AI")
-
+        st.set_page_config(layout="centered")
+        st.subheader("💬 Chat with AI",divider="grey")
         DisplayHistory().render()
 
         if prompt := st.chat_input("Ask a question..."):
@@ -34,7 +34,7 @@ class ChatPage:
                 })
 
                 with st.chat_message("assistant"):
-                    st.dataframe(df)
+                    st.dataframe(df,use_container_width=False)
 
             except Exception as e:
                 error_msg = f"❌ Error: {e}"

@@ -1,60 +1,26 @@
 import streamlit as st
-from frontend.pages.login import LoginPage
-from frontend.pages.signup import SignupPage
-from frontend.pages.dashboard_ui import DashboardPage
-from frontend.pages.chat import ChatPage
-from frontend.pages.admin import AdminPage
+from frontend.page_config import get_pages_for_role
 
-# Initialize session
-# Initialize all session keys safely
+
+# Initialize session state
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
-if "role" not in st.session_state:
-    st.session_state.role = None
-if "email" not in st.session_state:
     st.session_state.email = None
+    st.session_state.role = "guest"
 
+def create_navigation_pages():
+    # if user is authenticated, get authorized pages based on role; else get public pages
+    role = st.session_state.role if st.session_state.authenticated else "guest"
+    page_configs = get_pages_for_role(role)
+    pages = []
+    for page in page_configs:
+        #func = getattr(page_funcs, page["func_name"])
+        pages.append(st.Page(page["path"], title=page["title"], icon=page["icon"]))
+    return pages
 
-if st.session_state.authenticated:
-    if st.sidebar.button("🚪 Logout"):
-        st.session_state.clear()
-        st.rerun()
+# Build navigation
+pages = create_navigation_pages()
+selected = st.navigation(pages, position="sidebar", expanded=True)
+# Run the selected page
+selected.run()
 
-if not st.session_state.authenticated:
-    tab1, tab2 = st.tabs(["🔐 Login", "📝 Sign Up"])
-
-    login_success = False
-    with tab1:
-        login_success = LoginPage().render()
-
-    with tab2:
-        SignupPage().render()
-
-    if not login_success:
-        st.stop()
-
-
-# Role-based rendering
-role = st.session_state.role
-
-if role == "user":
-    pages = [
-    st.Page(
-        "frontend/pages/dashboard_ui.py",
-        title="Dashboard",
-        icon="📊",
-		default=True
-        ),
-    st.Page(
-        "frontend/pages/chat.py",
-        title="Chat with AI",
-        icon="💬",
-        ),
-    ]
-    selected_page = st.navigation(pages, position="sidebar", expanded=True)
-    selected_page.run()
-
-elif role == "admin" or role == "super_admin":
-    AdminPage().render()
-else:
-    st.error("🚫 Unknown role.")

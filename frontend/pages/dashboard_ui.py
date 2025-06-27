@@ -8,8 +8,7 @@ class DashboardPage:
         self.fetcher = DataFetcher()
 
     def render(self):
-        
-        st.title("📊 Interactive Dashboard")
+        st.set_page_config(layout="wide")
 
         df_metrics = self.fetcher.fetch_metrics()
 
