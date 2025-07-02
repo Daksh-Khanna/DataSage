@@ -1,11 +1,11 @@
 import streamlit as st
-from backend.dao.data_fetcher import DataFetcher
+from backend.dao.data_fetcher_api import DataFetcherAPI
 from frontend.dashboard.details import DetailsView
 from frontend.dashboard.metrics import MetricsView
 
 class DashboardPage:
     def __init__(self):
-        self.fetcher = DataFetcher()
+        self.fetcher = DataFetcherAPI()  # updated
 
     def render(self):
         st.set_page_config(layout="wide")

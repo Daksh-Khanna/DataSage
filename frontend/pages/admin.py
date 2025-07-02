@@ -1,13 +1,12 @@
 # frontend/pages/admin.py
 import streamlit as st
 import pandas as pd
+import requests
 import base64
-from backend.auth.user_manager_db import UserManagerDB
+
+API_BASE_URL = "http://localhost:8000/admin"  # Change if using ngrok
 
 class AdminPage:
-    def __init__(self):
-        self.user_manager = UserManagerDB()
-
     def render(self):
         st.set_page_config(layout="wide")
         tab_onboard, tab_view = st.tabs(["➕ Onboard User", "📋 View Users"])
@@ -25,30 +24,55 @@ class AdminPage:
                         if not all([email, password, face_image]):
                             st.warning("All fields are required.")
                         else:
+                            # Convert image to base64
+                            face_bytes = face_image.getvalue()
+                            image_base64 = base64.b64encode(face_bytes).decode("utf-8")
+
+                            payload = {
+                                "email": email,
+                                "password": password,
+                                "role": role,
+                                "face_image_base64": image_base64
+                            }
+
                             try:
-                                self.user_manager.add_user(email, password, role, face_image)
-                                st.success(f"✅ User {email} onboarded as {role}.")
+                                response = requests.post(f"{API_BASE_URL}/add_user", json=payload)
+                                if response.status_code == 200:
+                                    st.success(f"✅ User {email} onboarded as {role}.")
+                                else:
+                                    st.error(f"❌ Failed: {response.json().get('detail', response.text)}")
                             except Exception as e:
-                                st.error(f"❌ Failed to add user: {e}")
+                                st.error(f"❌ Error: {e}")
 
         with tab_view:
+            try:
+                response = requests.get(f"{API_BASE_URL}/users")
+                if response.status_code == 200:
+                    users = response.json()
+                else:
+                    st.error("Failed to fetch users.")
+                    return
+            except Exception as e:
+                st.error(f"Error fetching users: {e}")
+                return
 
-            users = self.user_manager.get_all_users_full()
             if not users:
                 st.info("No users found.")
                 return
 
-            df = pd.DataFrame(users, columns=["id", "email", "role", "image_path"])
+            df = pd.DataFrame(users)
 
-            # Convert image_path to base64 data URLs
+            # Convert image_path to base64 inline images
             def img_to_data_url(path):
-                data = open(path, "rb").read()
-                b64 = base64.b64encode(data).decode("utf-8")
-                return f"data:image/png;base64,{b64}"
+                try:
+                    with open(path, "rb") as f:
+                        b64 = base64.b64encode(f.read()).decode("utf-8")
+                        return f"data:image/png;base64,{b64}"
+                except:
+                    return None
 
             df["photo"] = df["image_path"].apply(img_to_data_url)
 
-            # Display dataframe with inline photos
             st.dataframe(
                 df[["id", "email", "role", "photo"]],
                 use_container_width=True,

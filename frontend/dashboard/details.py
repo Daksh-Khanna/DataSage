@@ -36,8 +36,18 @@ class DetailsView:
 
             df_details = self.fetcher.fetch_details(filters)
 
+        filter_keys = [
+        "date_range",
+        "operator_filter",
+        "email_filter",
+        "system_status_filter",
+        "user_feedback_filter",
+        ]
+
         if reset_filters:
-            st.session_state.clear()
+            for key in filter_keys:
+                if key in st.session_state:
+                    del st.session_state[key]
             st.rerun()
 
         display_df = df_details.rename(columns={

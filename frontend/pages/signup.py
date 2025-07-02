@@ -1,10 +1,11 @@
+# frontend/pages/signup.py
 import streamlit as st
-from backend.auth.user_manager_db import UserManagerDB
+import requests
+import base64
+
+API_URL = "http://localhost:8000"
 
 class SignupPage:
-    def __init__(self):
-        self.user_manager = UserManagerDB()
-
     def render(self):
         st.set_page_config(layout="centered")
         col1, col2, col3 = st.columns([1, 2, 1])
@@ -25,9 +26,22 @@ class SignupPage:
                         return
 
                     try:
-                        self.user_manager.add_user(email, password, "user", face_image)
-                        st.success("✅ Account created successfully. You can now log in.")
+                        image_bytes = face_image.getvalue()
+                        image_b64 = base64.b64encode(image_bytes).decode("utf-8")
+
+                        response = requests.post(f"{API_URL}/auth/signup", json={
+                            "email": email,
+                            "password": password,
+                            "role": "user",
+                            "face_image_base64": image_b64
+                        })
+
+                        if response.status_code == 200:
+                            st.success("✅ Account created successfully. You can now log in.")
+                        else:
+                            st.error(f"❌ Failed: {response.json().get('detail', 'Unknown error')}")
+
                     except Exception as e:
-                        st.error(f"❌ Failed to sign up: {e}")
+                        st.error(f"❌ Exception occurred: {e}")
 
 SignupPage().render()

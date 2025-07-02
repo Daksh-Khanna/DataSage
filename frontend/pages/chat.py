@@ -1,11 +1,11 @@
 import streamlit as st
-import pandas as pd
-from backend.assistant.sql_assistant.sql_generator import generate_sql
-from backend.dao.db_connector import DBConnector
-from utils.logger import get_logger
+import requests
 from frontend.chat.display_history import DisplayHistory
+from utils.logger import get_logger
 
 logger = get_logger("chat_logger", "chat.log")
+
+API_URL = "http://localhost:8000/chat/query"  # Change this if deployed
 
 class ChatPage:
     def __init__(self):
@@ -13,7 +13,7 @@ class ChatPage:
 
     def render(self):
         st.set_page_config(layout="centered")
-        st.subheader("💬 Chat with AI",divider="grey")
+        st.subheader("💬 Chat with AI", divider="grey")
         DisplayHistory().render()
 
         if prompt := st.chat_input("Ask a question..."):
@@ -21,12 +21,21 @@ class ChatPage:
             st.chat_message("user").markdown(prompt)
 
             try:
-                sql_query = generate_sql(prompt)
-                logger.info(f"Generated SQL: {sql_query}")
+                # Send prompt to FastAPI
+                response = requests.post(API_URL, json={"prompt": prompt})
 
-                db = DBConnector()
-                with db.get_connection() as conn:
-                    df = pd.read_sql(sql_query, conn)
+                if response.status_code != 200:
+                    raise Exception(response.json().get("detail", "Unknown error"))
+
+                data = response.json()
+                logger.info(f"Generated SQL: {data['sql']}")
+
+                # Display results
+                df_columns = data["columns"]
+                df_rows = data["rows"]
+
+                import pandas as pd
+                df = pd.DataFrame(df_rows, columns=df_columns)
 
                 st.session_state.messages.append({
                     "role": "assistant",
@@ -34,7 +43,7 @@ class ChatPage:
                 })
 
                 with st.chat_message("assistant"):
-                    st.dataframe(df,use_container_width=False)
+                    st.dataframe(df, use_container_width=False)
 
             except Exception as e:
                 error_msg = f"❌ Error: {e}"
