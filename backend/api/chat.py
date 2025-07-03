@@ -10,7 +10,7 @@ class ChatQuery(BaseModel):
     prompt: str
 
 @router.post("/chat/query")
-def handle_chat(query: ChatQuery):
+def complete_chat(query: ChatQuery):
     try:
         # Step 1: Generate SQL
         sql = generate_sql(query.prompt)

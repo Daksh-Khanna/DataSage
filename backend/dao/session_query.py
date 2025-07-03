@@ -1,4 +1,4 @@
-class QueryBuilder:
+class SessionQueryBuilder:
 
     @staticmethod
     def build_details_query(filters):

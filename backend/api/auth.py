@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, Field
-from backend.auth.user_manager_db import UserManagerDB
+from backend.auth.user_manager import UserManager
 from backend.auth.face_authenticator import FaceAuthenticator
 import base64
 import io
 
 # Initialize router and services
 router = APIRouter()
-user_db = UserManagerDB()
+user_db = UserManager()
 face_auth = FaceAuthenticator()
 
 # -------- Pydantic Model --------

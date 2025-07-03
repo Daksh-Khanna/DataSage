@@ -16,7 +16,7 @@ class SignupPage:
                 confirm_password = st.text_input("Confirm Password", type="password", key="signup_confirm_password")
                 face_image = st.camera_input("Capture Your Face", key="signup_face")
 
-                if st.button("Sign Up"):
+                if st.button("Sign Up",type="primary", use_container_width=True):
                     if not all([email, password, confirm_password, face_image]):
                         st.warning("All fields are required.")
                         return

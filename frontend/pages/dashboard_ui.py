@@ -1,5 +1,5 @@
 import streamlit as st
-from backend.dao.data_fetcher_api import DataFetcherAPI
+from frontend.dashboard.session_fetcher import DataFetcherAPI
 from frontend.dashboard.details import DetailsView
 from frontend.dashboard.metrics import MetricsView
 

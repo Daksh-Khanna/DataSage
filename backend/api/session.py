@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Query
-from backend.dao.data_fetcher import DataFetcher
+from backend.dao.session_dao import DataFetcher
 from typing import Optional
 import pandas as pd
 

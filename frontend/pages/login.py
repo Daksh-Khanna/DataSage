@@ -11,8 +11,6 @@ class LoginPage:
         with st.container():
             col1, col2, col3 = st.columns([1, 2, 1])
             with col2:
-                st.title("Login")
-
                 email = st.text_input("Email", key="login_email")
                 password = st.text_input("Password", type="password", key="login_password")
                 face_image = st.camera_input("Capture your face", key="login_face")

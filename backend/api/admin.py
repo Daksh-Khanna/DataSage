@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, Field
 import base64, io
-from backend.auth.user_manager_db import UserManagerDB
+from backend.auth.user_manager import UserManager
 
 router = APIRouter()
-user_db = UserManagerDB()
+user_db = UserManager()
 
 # Pydantic model
 class AdminAddUserRequest(BaseModel):
@@ -14,7 +14,7 @@ class AdminAddUserRequest(BaseModel):
     face_image_base64: str = Field(..., min_length=100)
 
 @router.post("/admin/add_user")
-def admin_add_user(request: AdminAddUserRequest):
+def add_user(request: AdminAddUserRequest):
     try:
         image_bytes = base64.b64decode(request.face_image_base64)
         user_db.add_user(
@@ -28,9 +28,9 @@ def admin_add_user(request: AdminAddUserRequest):
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/admin/users")
-def list_all_users():
+def list_users():
     try:
-        users = user_db.get_all_users_full()
+        users = user_db.get_users()
         return [
             {
                 "id": row[0],

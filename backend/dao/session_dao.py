@@ -1,6 +1,6 @@
 import pandas as pd
 from .db_connector import DBConnector
-from .queries import QueryBuilder
+from .session_query import SessionQueryBuilder
 
 class DataFetcher:
     def __init__(self):
@@ -8,7 +8,7 @@ class DataFetcher:
 
     def fetch_details(self, filters=None):
         filters = filters or {}
-        query, params = QueryBuilder.build_details_query(filters)
+        query, params = SessionQueryBuilder.build_details_query(filters)
         with self.db.get_connection() as conn:
             df = pd.read_sql(query, conn, params=params)
         df["start_time_utc"] = pd.to_datetime(df["start_time_utc"])
@@ -31,7 +31,7 @@ class DataFetcher:
         return df
 
     def fetch_metrics(self):
-        query = QueryBuilder.build_metrics_query()
+        query = SessionQueryBuilder.build_metrics_query()
         with self.db.get_connection() as conn:
             df = pd.read_sql(query, conn)
         return df
