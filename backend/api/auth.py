@@ -1,12 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, EmailStr, Field
 from backend.auth.user_manager import UserManager
 from backend.auth.face_authenticator import FaceAuthenticator
 import base64
 import io
+from backend.api.api_key_auth import verify_bearer_token
 
 # Initialize router and services
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_bearer_token)])
 user_db = UserManager()
 face_auth = FaceAuthenticator()
 

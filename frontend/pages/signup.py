@@ -2,8 +2,9 @@
 import streamlit as st
 import requests
 import base64
+from config import API_KEY, API_BASE_URL
 
-API_URL = "http://localhost:8000"
+headers = {"Authorization": f"Bearer {API_KEY}"}
 
 class SignupPage:
     def render(self):
@@ -29,12 +30,13 @@ class SignupPage:
                         image_bytes = face_image.getvalue()
                         image_b64 = base64.b64encode(image_bytes).decode("utf-8")
 
-                        response = requests.post(f"{API_URL}/auth/signup", json={
+                        response = requests.post(f"{API_BASE_URL}/auth/signup", json={
                             "email": email,
                             "password": password,
                             "role": "user",
                             "face_image_base64": image_b64
-                        })
+                        },headers=headers
+                        )
 
                         if response.status_code == 200:
                             st.success("✅ Account created successfully. You can now log in.")

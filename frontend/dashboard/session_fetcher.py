@@ -1,13 +1,12 @@
-# backend/dao/data_fetcher_api.py
-
 import requests
 import pandas as pd
+from config import API_KEY, API_BASE_URL
 
-API_BASE = "http://localhost:8000"  # or ngrok URL if tunneling
+headers = {"Authorization": f"Bearer {API_KEY}"}
 
 class DataFetcherAPI:
     def fetch_metrics(self):
-        res = requests.get(f"{API_BASE}/session/metrics")
+        res = requests.get(f"{API_BASE_URL}/session/metrics",headers=headers)
         res.raise_for_status()
         data = res.json()
         return pd.DataFrame(data)
@@ -28,7 +27,7 @@ class DataFetcherAPI:
             if "user_feedback" in filters:
                 params["user_feedback"] = filters["user_feedback"]
 
-        res = requests.get(f"{API_BASE}/session/details", params=params)
+        res = requests.get(f"{API_BASE_URL}/session/details", params=params, headers=headers)
         res.raise_for_status()
         data = res.json()
         return pd.DataFrame(data)

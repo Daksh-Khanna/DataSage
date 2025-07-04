@@ -2,8 +2,9 @@
 import streamlit as st
 import requests
 import base64
+from config import API_KEY, API_BASE_URL
 
-API_URL = "http://localhost:8000"  # Replace with ngrok/public URL when deployed
+headers = {"Authorization": f"Bearer {API_KEY}"}
 
 class LoginPage:
     def render(self):
@@ -25,11 +26,12 @@ class LoginPage:
                         image_b64 = base64.b64encode(face_image.getvalue()).decode("utf-8")
 
                         # Send login request
-                        response = requests.post(f"{API_URL}/auth/login", json={
+                        response = requests.post(f"{API_BASE_URL}/auth/login", json={
                             "email": email,
                             "password": password,
                             "face_image_base64": image_b64
-                        })
+                        },headers=headers
+                        )
 
                         if response.status_code == 200:
                             data = response.json()

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from backend.dao.db_connector import DBConnector
 from backend.assistant.sql_assistant.sql_generator import generate_sql
 import pandas as pd
+from backend.api.api_key_auth import verify_bearer_token
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_bearer_token)])
 
 class ChatQuery(BaseModel):
     prompt: str

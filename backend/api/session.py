@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 from backend.dao.session_dao import DataFetcher
 from typing import Optional
 import pandas as pd
+from backend.api.api_key_auth import verify_bearer_token
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(verify_bearer_token)])
 fetcher = DataFetcher()
 
 @router.get("/session/details")

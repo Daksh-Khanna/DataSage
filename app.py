@@ -1,7 +1,6 @@
 import streamlit as st
 from frontend.page_config import get_pages_for_role
 
-
 # Initialize session state
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False

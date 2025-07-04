@@ -2,10 +2,11 @@ import streamlit as st
 import requests
 from frontend.chat.display_history import DisplayHistory
 from utils.logger import get_logger
+from config import API_KEY, API_BASE_URL
 
 logger = get_logger("chat_logger", "chat.log")
-
-API_URL = "http://localhost:8000/chat/query"  # Change this if deployed
+  # Change this if deployed
+headers = {"Authorization": f"Bearer {API_KEY}"}
 
 class ChatPage:
     def __init__(self):
@@ -22,7 +23,7 @@ class ChatPage:
 
             try:
                 # Send prompt to FastAPI
-                response = requests.post(API_URL, json={"prompt": prompt})
+                response = requests.post(f"{API_BASE_URL}/chat/query", json={"prompt": prompt},headers=headers)
 
                 if response.status_code != 200:
                     raise Exception(response.json().get("detail", "Unknown error"))
