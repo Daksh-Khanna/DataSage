@@ -91,7 +91,7 @@ streamlit run app.py
 ## 🙌 Author
 
 **Daksh Khanna**
-[LinkedIn]([(https://www.linkedin.com/in/daksh-khanna-769002320/)](https://www.linkedin.com/in/daksh-khanna-769002320/)) | [GitHub](https://github.com/Daksh-Khanna)
+[LinkedIn](https://www.linkedin.com/in/daksh-khanna-769002320/) | [GitHub](https://github.com/Daksh-Khanna)
 
 ---
 
