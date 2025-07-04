@@ -1,4 +1,4 @@
-# 📊 Summer Project 2025 — Streamlit + FastAPI + AI
+# 📊 DataSage — Streamlit + FastAPI + AI
 
 A full-stack Python project featuring user authentication (with facial recognition), role-based dashboards, and an AI-powered chatbot that answers natural language questions by converting them into SQL queries.
 
